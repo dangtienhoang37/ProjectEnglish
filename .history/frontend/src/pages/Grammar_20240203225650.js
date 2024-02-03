@@ -75,46 +75,6 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-function YouTubeVideo({ videoUrl, isPlaying, onEnded }) {
-  const videoContainerStyle = {
-    position: "relative",
-    width: "100%",
-    height: 0,
-    paddingBottom: "56.25%", // 16:9 aspect ratio
-  };
-
-  const iframeStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-  };
-
-  return (
-    <div style={videoContainerStyle}>
-      <iframe
-        style={iframeStyle}
-        width="560"
-        height="315"
-        src={isPlaying === true && videoUrl}
-        title="YouTube Video"
-        frameBorder="0"
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-        onEnded={onEnded}
-      ></iframe>
-    </div>
-  );
-}
-
 export default function GrammarPage() {
   useTitle("Grammar");
   const classes = useStyle();
@@ -127,7 +87,7 @@ export default function GrammarPage() {
   const { grammar, questions } = useSelector((state) => state.grammarReducer);
 
   const dispatch = useDispatch();
-  useEffect(() => dispatch(getGrammar(grammarId)), [dispatch]);
+  useEffect(() => dispatch(getGrammar(grammarId), [dispatch]));
 
   const [answers, setAnswers] = useState([]);
 
@@ -160,7 +120,7 @@ export default function GrammarPage() {
   };
 
   const handleClickReset = () => {
-    if (window.confirm("Do you want to reload the page?")) {
+    if (window.confirm("Do you want reload page again?")) {
       window.location.reload();
     }
   };
@@ -205,25 +165,58 @@ export default function GrammarPage() {
             } else {
               isCorrect[i] = false;
             }
+
           } else {
-            if (window.confirm("Choose an answer for all questions.")) {
+            if (window.confirm("Chọn đáp án cho tất cả câu hỏi.")) {
               window.close();
             }
           }
         } else {
-          if (window.confirm("Choose an answer for all questions.")) {
+          if (window.confirm("Chọn đáp án cho tất cả câu hỏi.")) {
             window.close();
           }
         }
       }
     } else {
-      if (window.confirm("Choose an answer for all questions.")) {
+      if (window.confirm("Chọn đáp án cho tất cả câu hỏi.")) {
         window.close();
       }
     }
     setCheckAnswer(true);
     setShowAnswer(true);
   };
+
+  function YouTubeVideo({ videoUrl, isPlaying, onEnded }) {
+    const videoContainerStyle = {
+      position: "relative",
+      width: "100%",
+      height: 0,
+      paddingBottom: "56.25%", // 16:9 aspect ratio
+    };
+
+    const iframeStyle = {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+    };
+    return (
+      <div style={videoContainerStyle}>
+        <iframe
+          style={iframeStyle}
+          width="560"
+          height="315"
+          src={isPlaying === true && videoUrl}
+          title="YouTube Video"
+          frameBorder="0"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          onEnded={onEnded}
+        ></iframe>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -236,11 +229,13 @@ export default function GrammarPage() {
         </>
 
         {grammar.Video ? (
-          <YouTubeVideo
-            videoUrl={isPlaying === true && grammar.Video}
-            isPlaying={isPlaying}
-            onEnded={() => setIsPlaying(false)}
-          />
+          <div>
+            {/* Sử dụng thành phần YouTubeVideo thay vì VideoCard */}
+            <YouTubeVideo
+              videoUrl={isPlaying === true && grammar.Video}
+              onEnded={() => setIsPlaying(false)}
+            />
+          </div>
         ) : (
           <img className={classes.picture} src={imgSrc} alt="" align="center" />
         )}
@@ -248,7 +243,7 @@ export default function GrammarPage() {
         {grammar.Audio && (
           <audio controls>
             <source src={grammar.Audio} type="audio/mpeg" />
-            Your browser does not support the audio element.
+            Trình duyệt của bạn không hỗ trợ phần tử âm thanh.
           </audio>
         )}
 

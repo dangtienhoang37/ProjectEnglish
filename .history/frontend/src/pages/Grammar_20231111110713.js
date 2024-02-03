@@ -5,6 +5,7 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import useTitle from "../hooks/useTitle";
+import { VideoCard } from "material-ui-player";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -82,39 +83,6 @@ function a11yProps(index) {
   };
 }
 
-function YouTubeVideo({ videoUrl, isPlaying, onEnded }) {
-  const videoContainerStyle = {
-    position: "relative",
-    width: "100%",
-    height: 0,
-    paddingBottom: "56.25%", // 16:9 aspect ratio
-  };
-
-  const iframeStyle = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-  };
-
-  return (
-    <div style={videoContainerStyle}>
-      <iframe
-        style={iframeStyle}
-        width="560"
-        height="315"
-        src={isPlaying === true && videoUrl}
-        title="YouTube Video"
-        frameBorder="0"
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-        onEnded={onEnded}
-      ></iframe>
-    </div>
-  );
-}
-
 export default function GrammarPage() {
   useTitle("Grammar");
   const classes = useStyle();
@@ -127,7 +95,7 @@ export default function GrammarPage() {
   const { grammar, questions } = useSelector((state) => state.grammarReducer);
 
   const dispatch = useDispatch();
-  useEffect(() => dispatch(getGrammar(grammarId)), [dispatch]);
+  useEffect(() => dispatch(getGrammar(grammarId), [dispatch]));
 
   const [answers, setAnswers] = useState([]);
 
@@ -160,7 +128,7 @@ export default function GrammarPage() {
   };
 
   const handleClickReset = () => {
-    if (window.confirm("Do you want to reload the page?")) {
+    if (window.confirm("Do you want reload page again?")) {
       window.location.reload();
     }
   };
@@ -205,19 +173,24 @@ export default function GrammarPage() {
             } else {
               isCorrect[i] = false;
             }
+
+            // if(answers[i].length>1) {isCorrect[i]=false;}
+            // else{
+            //   if(questions[i].Answers[answers[i][0]].isCorrect==true) {isCorrect[i]=true;}
+            //   if(questions[i].Answers[answers[i][0]].isCorrect==false) {isCorrect[i]=false;}
           } else {
-            if (window.confirm("Choose an answer for all questions.")) {
+            if (window.confirm("Chọn đáp án cho tất cả câu hỏi.")) {
               window.close();
             }
           }
         } else {
-          if (window.confirm("Choose an answer for all questions.")) {
+          if (window.confirm("Chọn đáp án cho tất cả câu hỏi.")) {
             window.close();
           }
         }
       }
     } else {
-      if (window.confirm("Choose an answer for all questions.")) {
+      if (window.confirm("Chọn đáp án cho tất cả câu hỏi.")) {
         window.close();
       }
     }
@@ -236,11 +209,12 @@ export default function GrammarPage() {
         </>
 
         {grammar.Video ? (
-          <YouTubeVideo
-            videoUrl={isPlaying === true && grammar.Video}
-            isPlaying={isPlaying}
-            onEnded={() => setIsPlaying(false)}
-          />
+          <div>
+            <VideoCard
+              src={isPlaying === true && grammar.Video}
+              onEnded={() => setIsPlaying(false)}
+            ></VideoCard>
+          </div>
         ) : (
           <img className={classes.picture} src={imgSrc} alt="" align="center" />
         )}
