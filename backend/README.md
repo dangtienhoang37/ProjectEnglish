@@ -1,0 +1,3 @@
+# DungPrj
+
+chạy: yarn dev
